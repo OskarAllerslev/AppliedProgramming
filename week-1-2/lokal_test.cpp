@@ -2,6 +2,7 @@
 #include <iostream>
 // #include "2_6.h"
 #include "3_3.h"
+#include "5_4.h"
 
 
 int main() 
@@ -20,6 +21,11 @@ int main()
     // implicit_Euler(n);
     // std::cout << "tjek om der er en data fil" << std::endl;
 
+    double test_array[4] = {1.0, 2.0, 9.0, 7.8};
+    double std_err = calc_std(test_array, 4);
+
+    std::cout << "the standard error of our array: " << *test_array << "\n" 
+    << " is " << std_err << std::endl;
 
 
 }
