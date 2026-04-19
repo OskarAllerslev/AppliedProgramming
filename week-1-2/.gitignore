@@ -1,0 +1,10 @@
+
+
+# væk med compilede ting
+*.exe 
+*.o
+*.out
+
+# væk med data
+*.dat 
+*.csv
