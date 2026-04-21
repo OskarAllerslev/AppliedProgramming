@@ -51,7 +51,7 @@ void guassian_elimination(double **A, double *b, double *u, int n) {
       b[row] = b[row] - m_ik * b[col];
     }
   }
-  // backwards substitution
+  // backwards substitution - this is just solving the bottom equation then the one above etc. 
   for (int i = n - 1; i >= 0; i--) {
     double sum = b[i];
     for (int j = i+ 1; j < n; j++) {
