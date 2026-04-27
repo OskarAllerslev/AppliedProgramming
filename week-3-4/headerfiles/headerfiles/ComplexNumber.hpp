@@ -18,7 +18,7 @@ class ComplexNumber
         ComplexNumber operator-() const;
         ComplexNumber operator+(const ComplexNumber& z) const;
         ComplexNumber operator-(const ComplexNumber& z) const;
-        friend std::ostream& operator<<(std::ostream& output,const ComplexNumber& z);
+friend std::ostream& operator<<(std::ostream& output,const ComplexNumber& z);
 
         //exercise prototypes
         double GetRealPart() const;
