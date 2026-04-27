@@ -142,3 +142,10 @@ void ComplexNumber::SetConjugate()
 {
     mImaginaryPart = -mImaginaryPart;
 }
+
+ComplexNumber ComplexNumber::operator*(const ComplexNumber &z) const {
+  double real = mRealPart * z.mRealPart - mImaginaryPart * z.mImaginaryPart;
+  double img = mRealPart * z.mImaginaryPart + mImaginaryPart * z.mRealPart;
+
+  return ComplexNumber(real, img);
+}
