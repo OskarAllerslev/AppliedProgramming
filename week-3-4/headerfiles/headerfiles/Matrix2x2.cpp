@@ -53,3 +53,51 @@ Matrix2x2 Matrix2x2::CalcInverse() const
 	double new_11 = val00 / determinant;
 	return Matrix2x2(new_00, new_01, new_10, new_11);
 }
+
+
+// overloading the assignment operator fx A = B 
+Matrix2x2& Matrix2x2::operator=(const Matrix2x2& z)
+{
+ val00 = z.val00;
+ val10 = z.val10;
+ val01 = z.val01;
+ val11 = z.val11;
+ return *this;
+}
+
+Matrix2x2 Matrix2x2::operator-() const
+{
+
+	double new_00 = -val00;
+	double new_01 = -val01;
+	double new_10 = -val10;
+	double new_11 = -val11;
+	return Matrix2x2(new_00, new_01, new_10, new_11);
+}
+
+Matrix2x2 Matrix2x2::operator+(const Matrix2x2 &z) const
+{
+	Matrix2x2 w;
+	w.val00 = val00 + z.val00;
+	w.val01 = val01 + z.val01;
+	w.val10 = val10 + z.val10;
+	w.val11 = val11 + z.val11;
+	return w;
+}
+Matrix2x2 Matrix2x2::operator-(const Matrix2x2 &z) const
+{
+	Matrix2x2 w;
+	w.val00 = val00 - z.val00;
+	w.val01 = val01 - z.val01;
+	w.val10 = val10 - z.val10;
+	w.val11 = val11 - z.val11;
+	return w;
+}
+
+void Matrix2x2::MultScalar(double scalar)
+{
+	val00 = val00 * scalar;
+	val01 = val01 * scalar;
+	val10 = val10 * scalar;
+	val11 = val11 * scalar;
+}

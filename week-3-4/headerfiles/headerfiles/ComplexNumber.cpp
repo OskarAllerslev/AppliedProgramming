@@ -48,7 +48,7 @@ ComplexNumber& ComplexNumber::operator=(const ComplexNumber& z)
 {
     mRealPart = z.mRealPart;
     mImaginaryPart = z.mImaginaryPart;
-    return *this;
+return *this;
 }
 
 // Overloading the unary - operator
@@ -96,6 +96,7 @@ std::ostream& operator<<(std::ostream& output, const ComplexNumber& z)
     return output;
 }
 
+// funktion til at hente real part af complex number or returnere en double
 double ComplexNumber::GetRealPart() const 
 {
     return mRealPart;
