@@ -14,7 +14,7 @@ Student::Student()
 Student::Student(std::string name, double fines, double fees)
 {
     this->name = name;
-    library_fines = fines;
+    SetLibraryFines(fines);
     tuition_fees = fees;
 }
 

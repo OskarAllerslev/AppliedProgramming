@@ -44,7 +44,7 @@ void CalculateExponential(ComplexNumber **A, int nMax, ComplexNumber **res) {
 
   // now we do the loop from n =1 to nmax
 
-  for (int n = 1; n < nMax; n++) {
+  for (int n = 1; n <= nMax; n++) {
     // matrix multiplication for Tmp_n = Tmp_{n-1} + (current_term * A)
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 3; j++) {
