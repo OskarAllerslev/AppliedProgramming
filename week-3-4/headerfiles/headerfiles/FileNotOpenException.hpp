@@ -5,7 +5,7 @@
 
 class FileNotOpenException : public Exception {
 	public:
-		FileNotOpenException(std::string prob);
+	FileNotOpenException(std::string prob);
 };
 
 
