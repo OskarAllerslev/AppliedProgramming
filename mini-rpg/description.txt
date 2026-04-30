@@ -1,0 +1,6 @@
+
+This is a short mini rpg game. 
+
+I got gemini to create a short outline description of the game, and thus i try to code it here. 
+
+
