@@ -22,11 +22,7 @@ Student::Student(std::string name, double fines, double fees)
 
 void Student::SetLibraryFines(double amount)
 {
-    if(amount <= 0) 
-    {
-        library_fines = 0;
-    }
-    else 
+    if(amount > 0.0)
     {
         library_fines = amount;
     }
