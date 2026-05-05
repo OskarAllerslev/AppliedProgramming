@@ -6,6 +6,7 @@
 #include "SFML/Graphics/Sprite.hpp"
 #include "SFML/Graphics/Text.hpp"
 #include "SFML/Graphics/Texture.hpp"
+#include "SFML/System/Clock.hpp"
 #include "SFML/System/Sleep.hpp"
 #include "SFML/System/Time.hpp"
 #include "SFML/Window/Event.hpp"
@@ -58,24 +59,35 @@ int main()
 
   std::string actionLog = "A wild monster attacks!\nPress space to attack!.";
 
+  sf::Clock gameClock;
+  float enemyDelay = 0.8f;
+  float timer = 0.f;
+
+
+  sf::Color playerColor = sf::Color::White;
+  sf::Color enemyColor = sf::Color::White;
+
+
   while(window.isOpen())
   {
+    float dt = gameClock.restart().asSeconds();
     sf::Event event;
     while (window.pollEvent(event))
     {
-      if (event.type == sf::Event::Closed)
-      {
-        window.close();
-      }
+      if (event.type == sf::Event::Closed) window.close();
 
-      // player turn
       if (currentState == PLAYER_TURN && event.type == sf::Event::KeyPressed)
       {
         if (event.key.code == sf::Keyboard::Space) 
         {
           player.Attack(enemy);
+          enemyColor = sf::Color::Red; 
+          timer = 0.f;
           actionLog = "You attacked " + enemy.GetName() + "!";
-          if (!enemy.IsAlive()) currentState = GAME_OVER;
+          if (!enemy.IsAlive()) {
+              actionLog += "\nYou defeated the monster!";
+              currentState = GAME_OVER;
+          }
           else currentState = ENEMY_TURN;
         }
         else if (event.key.code == sf::Keyboard::H)
@@ -83,25 +95,21 @@ int main()
           player.Heal(25);
           actionLog = "You healed yourself!";
           currentState = ENEMY_TURN;
+          timer = 0.f;
         }
       }
     }
 
-      // monster turn
-      if (currentState == ENEMY_TURN)
+    // MONSTER TURN 
+    if (currentState == ENEMY_TURN)
+    {
+      timer += dt;
+      if (timer >= enemyDelay)
       {
-        window.clear(sf::Color::Black);
-        window.draw(playerSprite);
-        window.draw(enemySprite);
-        window.draw(infoText);
-        window.display();
-
-        sf::sleep(sf::milliseconds(800));
-
         enemy.Attack(player);
-        actionLog = enemy.GetName() + " bit you!";
-
-        // check if player died 
+        playerColor = sf::Color::Red;
+        actionLog = enemy.GetName() + " attacked you!";
+        
         if (!player.IsAlive())
         {
             actionLog += "\nYOU DIED";
@@ -111,23 +119,34 @@ int main()
         {
           currentState = PLAYER_TURN;
         }
-
+        timer = 0.f;
       }
-
-      // TEXT FOR THE SCREEN
-
-      std::string uiString = actionLog + "\n\n";
-      uiString += player.GetName() + " HP: " + std::to_string(player.GetHealth()) + "\n";
-      uiString += enemy.GetName() + " HP: " + std::to_string(enemy.GetHealth());
-      infoText.setString(uiString);
-
-      // RENDERING
-      window.clear(sf::Color(50, 50, 50)); // Mørkegrå baggrund
-      window.draw(playerSprite);
-      window.draw(enemySprite);
-      window.draw(infoText);
-      window.display();
     }
+
+    if (playerColor.g < 255) {
+        int val = std::min(255, (int)(playerColor.g + 10));
+        playerColor = sf::Color(255, val, val);
+    }
+    if (enemyColor.g < 255) {
+        int val = std::min(255, (int)(enemyColor.g + 10));
+        enemyColor = sf::Color(255, val, val);
+    }
+
+    std::string uiString = actionLog + "\n\n";
+    uiString += player.GetName() + " HP: " + std::to_string(player.GetHealth()) + "\n";
+    uiString += enemy.GetName() + " HP: " + std::to_string(enemy.GetHealth());
+    infoText.setString(uiString);
+
+    playerSprite.setColor(playerColor);
+    enemySprite.setColor(enemyColor);
+
+    // RENDER
+    window.clear(sf::Color(30, 30, 30));
+    window.draw(playerSprite);
+    window.draw(enemySprite);
+    window.draw(infoText);
+    window.display();
+  }
 
 
   return 0;
