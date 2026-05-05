@@ -81,6 +81,12 @@ class Game
         std::vector<FloatingText> floatingTexts;
 
 
+        // endless mode
+        int wave;
+        int enemyMaxHp;
+        sf::Text waveText;
+
+
 
 };
 

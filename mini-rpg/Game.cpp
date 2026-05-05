@@ -2,15 +2,17 @@
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#include "character.hpp"
 #include <iostream>
 #include <cmath>
+#include <string>
 
 // constructor
 Game::Game()
     : window(sf::VideoMode(1000, 800), "MINI-RPG"), player("Oskar", 100, 20),
-      enemy("Dracula", 80, 10), currentState(PLAYER_TURN), enemyDelay(0.8f),
+      enemy("Dracula", 40, 5), currentState(PLAYER_TURN), enemyDelay(0.8f),
       timer(0.f), playerColor(sf::Color::White), enemyColor(sf::Color::White), playerAnimTimer(0.f), enemyAnimTimer(0.f),
-      currentMenuIndex(0) {
+      currentMenuIndex(0), wave(1), enemyMaxHp(100) {
   if (!font.loadFromFile("Assets/Fonts/font.TTF")) {
     std::cout << "Kunne ikke loade font!\n";
   }
@@ -34,6 +36,11 @@ Game::Game()
   infoText.setCharacterSize(24);
   infoText.setFillColor(sf::Color::White);
   infoText.setPosition(20.f, 20.f);
+
+  waveText.setFont(font);
+  waveText.setCharacterSize(30);
+  waveText.setFillColor(sf::Color::Yellow);
+  waveText.setPosition(400.f, 20.f);
 
   actionLog = "A wild monster attacks!\nPress space to attack! (H to Heal)";
 
@@ -113,8 +120,13 @@ void Game::processEvents() {
           actionLog = "You attacked " + enemy.GetName() + "!";
 
           if (!enemy.IsAlive()) {
+            wave++;
+            enemyMaxHp = 40 + (wave * 15);
+            enemy = Vampire("Dravula V" + std::to_string(wave), enemyMaxHp, 5 + (wave * 2) );
+            player.Heal(40);
+
             actionLog += "\nYou defeated the monster!";
-            currentState = GAME_OVER;
+            currentState = PLAYER_TURN;
           } else {
             currentState = ENEMY_TURN;
           }
@@ -236,8 +248,9 @@ void Game::update(float dt) {
   float pHealth = std::max(0.f, (float)player.GetHealth() / 100.f);
   playerHpBar.setSize(sf::Vector2f(150.f * pHealth, 15.f));
 
-  float eHealth = std::max(0.f, (float)enemy.GetHealth() / 80.f); 
+  float eHealth = std::max(0.f, (float)enemy.GetHealth() / (float)enemyMaxHp);
   enemyHpBar.setSize(sf::Vector2f(150.f * eHealth, 15.f));
+  waveText.setString("Wave: " + std::to_string(wave));
 
   // --- OPDATER FLYVENDE TAL ---
   for (auto it = floatingTexts.begin(); it != floatingTexts.end(); ) {
