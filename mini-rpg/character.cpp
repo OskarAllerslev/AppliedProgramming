@@ -1,7 +1,9 @@
 #include "character.hpp"
+#include <algorithm>
 #include <iostream>
 #include <cmath>
 #include <cstdlib>
+#include <algorithm>
 
 // constructor
 Character::Character(std::string name, int health, int strength)
@@ -46,6 +48,13 @@ void Character::PrintHealth() const
     std::cout << "Health: " << health << std::endl;
 }
 
+int Character::GetHealth() const 
+{
+    return health;
+}
+
+
+
 void Character::Attack(Character &target)
 {
     int actualDamage = (rand() % strength) + 1;
@@ -63,8 +72,9 @@ Player::Player(std::string name, int health, int strength) : Character(name, hea
 }
 void Player::Heal(int amount)
 {
+    // cap vec max health
     int actualHeal = (rand() % amount) +1;
-    health = health + actualHeal;
+    health = std::min(80, health + actualHeal );
     std::cout << name << " Heals for: " << actualHeal << "HP!\n";
 }
 // ---------------------------------------------

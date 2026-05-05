@@ -6,11 +6,14 @@
 class Character 
 {
     public:
+    
+
     Character(std::string name, int health, int strength); // constructor?
     void takeDamage(int damage);
     bool IsAlive() const;
     std::string GetName() const;
     void PrintStatus() const;
+    int GetHealth() const;
     void PrintHealth() const;
     virtual void Attack(Character& target);
 
