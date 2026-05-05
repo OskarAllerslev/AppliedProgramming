@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <vector>
 #include "SFML/Graphics/Color.hpp"
 #include "SFML/Graphics/Font.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
@@ -14,6 +15,14 @@
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/System/Clock.hpp"
 #include "character.hpp"
+
+
+struct FloatingText
+{
+    sf::Text text;
+    float timer;
+};
+
 
 enum GameState
 {
@@ -38,6 +47,7 @@ class Game
         sf::RenderWindow window;
         sf::Font font;
         sf::Texture playerTex, enemyTex;
+        sf::Texture playerAttackTex, enemyAttackTex;
         sf::Sprite playerSprite, enemySprite;
         sf::Text infoText;
 
@@ -49,6 +59,10 @@ class Game
         sf::Clock gameClock;
         float enemyDelay;
         float timer;
+        float playerAnimTimer;
+        float enemyAnimTimer;
+
+
         sf::Color playerColor;
         sf::Color enemyColor;
 
@@ -57,6 +71,16 @@ class Game
         sf::RectangleShape menuBox;
         std::vector<sf::Text> menuTexts;
         void setupMenu();
+
+
+        // HP barer
+        sf::RectangleShape playerHpBarBg;
+        sf::RectangleShape playerHpBar;
+        sf::RectangleShape enemyHpBarBg;
+        sf::RectangleShape enemyHpBar;
+        std::vector<FloatingText> floatingTexts;
+
+
 
 };
 
