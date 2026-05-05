@@ -1,64 +1,52 @@
 #ifndef MATRIXHEADERDEF
 #define MATRIXHEADERDEF
 #include "Vector.hpp"
+#include <vector>
 
-class Matrix
+template <typename T> class Matrix
 {
 private:
-	double** mData; // entries of matrix
+    std::vector<T> mData;
 	int mNumRows, mNumCols; // dimensions
 
 public:
+    // we can remove since vector already has copy 
     // copy constructor
-	Matrix(const Matrix& otherMatrix)
-    {
-        mNumRows = otherMatrix.mNumRows;
-        mNumCols = otherMatrix.mNumCols;
-        mData = new double* [mNumRows];
+	// Matrix(const Matrix& otherMatrix)
+    // {
+    //     mNumRows = otherMatrix.mNumRows;
+    //     mNumCols = otherMatrix.mNumCols;
+    //     mData = new double* [mNumRows];
 
-        for (int i = 0; i < mNumRows; i++)
-        {
-            mData[i] = new double [mNumCols];
-        }
-        for (int i = 0; i < mNumRows; i++)
-        {
-            for (int j = 0; j < mNumCols; j++)
-            {
-                mData[i][j] = otherMatrix.mData[i][j];
-            }
-        }
-    }
+    //     for (int i = 0; i < mNumRows; i++)
+    //     {
+    //         mData[i] = new double [mNumCols];
+    //     }
+    //     for (int i = 0; i < mNumRows; i++)
+    //     {
+    //         for (int j = 0; j < mNumCols; j++)
+    //         {
+    //             mData[i][j] = otherMatrix.mData[i][j];
+    //         }
+    //     }
+    // }
 
-	Matrix(int numRows, int numCols)
+	Matrix(int numRows, int numCols) : mNumRows(numRows), mNumCols(numCols)
     {
         assert(numRows > 0);
         assert(numCols > 0);
-
-        mNumRows = numRows;
-        mNumCols = numCols;
-        mData = new double* [mNumRows];
-
-        for (int i = 0; i < mNumRows; i++)
-        {
-            mData[i] = new double [mNumCols];
-        }
-        for (int i = 0; i < mNumRows; i++)
-        {
-            for (int j = 0; j < mNumCols; j++)
-            {
-                mData[i][j] = 0.0;
-            }
-        }
+        mData = std::vector<T>(mNumRows * mNumCols, T(0));
     }
 
-	~Matrix()
-    {
-        for (int i = 0; i < mNumRows; i++)
-        {
-            delete[] mData[i];
-        }
-        delete[] mData;
-    }
+    // we can remove since the vector type already has automatic deletion
+	// ~Matrix()
+    // {
+    //     for (int i = 0; i < mNumRows; i++)
+    //     {
+    //         delete[] mData[i];
+    //     }
+    //     delete[] mData;
+    // }
 
 	int GetNumberOfRows() const
     {
@@ -70,41 +58,41 @@ public:
         return mNumCols;
     }
 
-	double& operator()(int i, int j)
+	T& operator()(int i, int j)
     {
-        assert(i >= 0);
-        assert(i < mNumRows);
-        assert(j >= 0);
-        assert(j < mNumCols);
+        // we store the matrix in a long vector format 
+        assert(i >= 0 && i < mNumRows);
+        assert(j >= 0 && j < mNumCols);
+        return mData[i * mNumCols  + j];
 
-        return mData[i][j];
     }
 
-	double const& operator()(int i, int j) const
+	T const& operator()(int i, int j) const
     {
-        assert(i >= 0);
-        assert(i < mNumRows);
-        assert(j >= 0);
-        assert(j < mNumCols);
 
-        return mData[i][j];
+        // we store the matrix in a long vector format 
+        assert(i >= 0 && i < mNumRows);
+        assert(j >= 0 && j < mNumCols);
+        return mData[i * mNumCols  + j];
+
     }
 
 	// overloaded assignment operator
-	Matrix& operator=(const Matrix& otherMatrix)
-    {
-        assert(mNumRows == otherMatrix.mNumRows);
-        assert(mNumCols == otherMatrix.mNumCols);
+    // i dont think we need this?
+	// Matrix& operator=(const Matrix& otherMatrix)
+    // {
+    //     assert(mNumRows == otherMatrix.mNumRows);
+    //     assert(mNumCols == otherMatrix.mNumCols);
 
-        for (int i = 0; i < mNumRows; i++)
-        {
-            for (int j = 0; j < mNumCols; j++)
-            {
-                mData[i][j] = otherMatrix.mData[i][j];
-            }
-        }
-        return *this;
-    }
+    //     for (int i = 0; i < mNumRows; i++)
+    //     {
+    //         for (int j = 0; j < mNumCols; j++)
+    //         {
+    //             mData[i][j] = otherMatrix.mData[i][j];
+    //         }
+    //     }
+    //     return *this;
+    // }
 
 	Matrix operator-() const // unary -
     {
@@ -113,7 +101,7 @@ public:
         {
             for (int j = 0; j < mNumCols; j++)
             {
-                mat(i,j) = -mData[i][j];
+                mat(i,j) = -(*this)(i,j);
             }
         }
         return mat;
@@ -129,7 +117,7 @@ public:
         {
             for (int j = 0; j < mNumCols; j++)
             {
-                mat(i,j) = mData[i][j] + m1.mData[i][j];
+                mat(i,j) = (*this)(i,j) + m1(i,j);
             }
         }
         return mat;
@@ -145,36 +133,44 @@ public:
         {
             for (int j = 0; j < mNumCols; j++)
             {
-                mat(i,j) = mData[i][j] - m1.mData[i][j];
+                mat(i,j) = (*this)(i,j) - m1(i,j);
             }
         }
         return mat;
     }
 
 	// scalar multiplication
-	Matrix operator*(double a) const
+	Matrix operator*(T a) const
     {
         Matrix mat(mNumRows, mNumCols);
         for (int i = 0; i < mNumRows; i++)
         {
             for (int j = 0; j < mNumCols; j++)
             {
-                mat(i,j) = a*mData[i][j];
+                mat(i,j) = a* (*this)(i,j);
             }
         }
         return mat;
     }
+
+    std::vector<T> const& getStorage() const 
+    {
+        return mData;
+    }
+
+
 }; // class Matrix
 
 
 //matrix-vector multiplications
-Vector operator*(const Matrix& m, const Vector& v)
+template <typename T>
+Vector<T> operator*(const Matrix<T>& m, const Vector<T>& v)
 {
     int original_vector_size = v.size();
 	assert(m.GetNumberOfColumns() == original_vector_size);
 
 	int new_vector_length = m.GetNumberOfRows();
-	Vector new_vector(new_vector_length);
+	Vector<T> new_vector(new_vector_length);
 
 	for (int i = 0; i < new_vector_length; i++)
 	{
@@ -187,13 +183,14 @@ Vector operator*(const Matrix& m, const Vector& v)
 	return new_vector;
 }
 
-Vector operator*(const Vector& v, const Matrix& m)
+template <typename T>
+Vector<T> operator*(const Vector<T>& v, const Matrix<T>& m)
 {
 	int original_vector_size = v.size();
 	assert(m.GetNumberOfRows() == original_vector_size);
 
 	int new_vector_length = m.GetNumberOfColumns();
-	Vector new_vector(new_vector_length);
+	Vector<T> new_vector(new_vector_length);
 
 	for (int i = 0; i < new_vector_length; i++)
 	{
@@ -205,6 +202,7 @@ Vector operator*(const Vector& v, const Matrix& m)
 
 	return new_vector;
 }
+
 
 
 #endif

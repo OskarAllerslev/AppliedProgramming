@@ -3,70 +3,66 @@
 
 #include <cassert>
 #include <cmath>
+#include <vector>
 
+template<typename T> 
 class Vector
 {
 private:
-	double* mData; // data stored in vector
+	std::vector<T> mData; // data stored in vector
 	int mSize; // size of vector
 
 public:
     // copy constructor
-  Vector(const Vector& otherVector)
-    {
-        mSize = otherVector.size();
-        mData = new double [mSize];
-        for (int i = 0; i < mSize; i++)
-        {
-            mData[i] = otherVector.mData[i];
-        }
-    }
+//   Vector(const Vector& otherVector)
+//     {
+//         mSize = otherVector.size();
+//         mData = new double [mSize];
+//         for (int i = 0; i < mSize; i++)
+//         {
+//             mData[i] = otherVector.mData[i];
+//         }
+//     }
 
-	Vector(int size)
+	Vector(int size) : mSize(size)
     {
         assert(size > 0);
-
-        mSize = size;
-        mData = new double [mSize];
-        for (int i = 0; i < mSize; i++)
-        {
-            mData[i] = 0.0;
-        }
+        mData = std::vector<T>(mSize, T(0));
     }
 
-	~Vector()
-    {
-        delete[] mData;
-    }
+	// ~Vector()
+    // {
+    //     delete[] mData;
+    // }
 
 	int size() const
     {
         return mSize;
     }
 
-	double& operator[](int i)
+	T& operator[](int i)
     {
         assert(i >= 0 && i < mSize);
         return mData[i];
     }
 
-	double const& operator[] (int i)const
+	T const& operator[] (int i)const
     {
         assert(i >= 0 && i < mSize);
         return mData[i];
     }
 
 	// assignment operator
-	Vector& operator=(const Vector& otherVector)
-    {
-        assert(mSize == otherVector.mSize);
+	// Vector& operator=(const Vector& otherVector)
+    // {
+    //     assert(mSize == otherVector.mSize);
 
-        for (int i = 0; i < mSize; i++)
-        {
-            mData[i] = otherVector.mData[i];
-        }
-        return *this;
-    }
+    //     for (int i = 0; i < mSize; i++)
+    //     {
+    //         mData[i] = otherVector.mData[i];
+    //     }
+    //     return *this;
+    // }
 
     // overloading the unary - operator
 	Vector operator-() const
@@ -106,7 +102,7 @@ public:
     }
 
 	// scalar multiplication
-	Vector operator*(double a) const
+	Vector operator*(T a) const
     {
         Vector v(mSize);
         for (int i = 0; i < mSize; i++)
