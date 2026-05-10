@@ -90,7 +90,7 @@ void Vampire::Attack(Character &target)
    std::cout << "Damage inflicted: " << actualDamage << "\n";
    target.takeDamage(actualDamage);
    
-   health = health + actualDamage;
-   std::cout << name << " lifesteals from " << target.GetName()<< " and gains " << actualDamage << " HP!\n";
+   health = health + 1/10 * actualDamage;
+   std::cout << name << " lifesteals from " << target.GetName()<< " and gains " << 1/10 * actualDamage << " HP!\n";
 
 }
