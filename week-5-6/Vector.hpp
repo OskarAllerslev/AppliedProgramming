@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <cmath>
+#include <corecrt_malloc.h>
 #include <vector>
 
 template<typename T> 
@@ -28,6 +29,11 @@ public:
     {
         assert(size > 0);
         mData = std::vector<T>(mSize, T(0));
+    }
+
+    Vector(Vector&& other) noexcept : mData(std::move(other.mData)), mSize(other.mSize)
+    {
+        other.mSize = 0;
     }
 
 	// ~Vector()

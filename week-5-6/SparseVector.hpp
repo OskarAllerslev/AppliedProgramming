@@ -120,6 +120,7 @@ public:
       T current_value = this->getValue(idx);
       this->setValue(idx, current_value - val);
 	}
+	return *this;
   }
 };
 
