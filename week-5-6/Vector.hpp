@@ -14,15 +14,15 @@ private:
 
 public:
     // copy constructor
-//   Vector(const Vector& otherVector)
-//     {
-//         mSize = otherVector.size();
-//         mData = new double [mSize];
-//         for (int i = 0; i < mSize; i++)
-//         {
-//             mData[i] = otherVector.mData[i];
-//         }
-//     }
+  Vector(const Vector& otherVector)
+    {
+        mSize = otherVector.size();
+        mData = new double [mSize];
+        for (int i = 0; i < mSize; i++)
+        {
+            mData[i] = otherVector.mData[i];
+        }
+    }
 
 	Vector(int size) : mSize(size)
     {
@@ -58,16 +58,18 @@ public:
     }
 
 	// assignment operator
-	// Vector& operator=(const Vector& otherVector)
-    // {
-    //     assert(mSize == otherVector.mSize);
+	Vector& operator=(const Vector& otherVector)
+    {
+        // assert(mSize == otherVector.mSize);
 
-    //     for (int i = 0; i < mSize; i++)
-    //     {
-    //         mData[i] = otherVector.mData[i];
-    //     }
-    //     return *this;
-    // }
+        // for (int i = 0; i < mSize; i++)
+        // {
+        //     mData[i] = otherVector.mData[i];
+        // }
+        mSize = otherVector.mSize;
+        mData = otherVector.mData;
+        return *this;
+    }
 
     // overloading the unary - operator
 	Vector operator-() const
@@ -128,6 +130,17 @@ public:
         return pow(sum, 1.0 / ((double)(p)));
     }
 };
+
+template<typename T>
+Vector<T> operator*(const T& a, const Vector<T>& v)
+{
+    Vector<T> result(v.size());
+    for (int i =0; i < v.size(); i++)
+    {
+        result[i] = a * v[i];
+    }
+    return result;
+}
 
 
 #endif
