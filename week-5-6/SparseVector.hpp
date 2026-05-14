@@ -98,28 +98,86 @@ public:
 
   // adds x too the current vector
   SparseVector<T> &operator+=(SparseVector<T> const &x) {
-    for (int i = 0; i < x.nonZeroes(); i++) {
-      // we get the index from x
-      unsigned int idx = x.indexNonZero(i);
-      // the the value
-      T val = x.valueNonZero(i);
-      // current value
-      T current_value = this->getValue(idx);
-      // add
-      this->setValue(idx, current_value + val);
+    assert(mDimension == x.size());
+    std::vector<unsigned int> newIndices;
+    std::vector<T> newValues;
+    unsigned int i = 0, j = 0;
+    while (i < nonZeroes() && j < x.nonZeroes()) {
+        unsigned int idx1 = indexNonZero(i);
+        unsigned int idx2 = x.indexNonZero(j);
+        if (idx1 < idx2) {
+            newIndices.push_back(idx1);
+            newValues.push_back(valueNonZero(i));
+            i++;
+        } else if (idx2 < idx1) {
+            newIndices.push_back(idx2);
+            newValues.push_back(x.valueNonZero(j));
+            j++;
+        } else { // idx1 == idx2
+            T sum = valueNonZero(i) + x.valueNonZero(j);
+            if (sum != T(0)) {
+                newIndices.push_back(idx1);
+                newValues.push_back(sum);
+            }
+            i++;
+            j++;
+        }
     }
+    while (i < nonZeroes()) {
+        newIndices.push_back(indexNonZero(i));
+        newValues.push_back(valueNonZero(i));
+        i++;
+    }
+    while (j < x.nonZeroes()) {
+        newIndices.push_back(x.indexNonZero(j));
+        newValues.push_back(x.valueNonZero(j));
+        j++;
+    }
+    mIndices = newIndices;
+    mValues = newValues;
     return *this;
   }
   // subtracts x from the current vector
   SparseVector<T> &operator-=(SparseVector<T> const &x) 
   {
-	for (int i = 0; i < x.nonZeroes(); i++)
-	{
-      unsigned int idx = x.indexNonZero(i);
-      T val = x.valueNonZero(i);
-      T current_value = this->getValue(idx);
-      this->setValue(idx, current_value - val);
-	}
+	assert(mDimension == x.size());
+    std::vector<unsigned int> newIndices;
+    std::vector<T> newValues;
+    unsigned int i = 0, j = 0;
+    while (i < nonZeroes() && j < x.nonZeroes()) {
+        unsigned int idx1 = indexNonZero(i);
+        unsigned int idx2 = x.indexNonZero(j);
+        if (idx1 < idx2) {
+            newIndices.push_back(idx1);
+            newValues.push_back(valueNonZero(i));
+            i++;
+        } else if (idx2 < idx1) {
+            newIndices.push_back(idx2);
+            newValues.push_back(-x.valueNonZero(j));
+            j++;
+        } else { // idx1 == idx2
+            T diff = valueNonZero(i) - x.valueNonZero(j);
+            if (diff != T(0)) {
+                newIndices.push_back(idx1);
+                newValues.push_back(diff);
+            }
+            i++;
+            j++;
+        }
+    }
+    while (i < nonZeroes()) {
+        newIndices.push_back(indexNonZero(i));
+        newValues.push_back(valueNonZero(i));
+        i++;
+    }
+    while (j < x.nonZeroes()) {
+        newIndices.push_back(x.indexNonZero(j));
+        newValues.push_back(-x.valueNonZero(j));
+        j++;
+    }
+    mIndices = newIndices;
+    mValues = newValues;
+	return *this;
   }
 };
 
@@ -146,16 +204,16 @@ SparseVector<T> operator-(SparseVector<T> const &x, SparseVector<T> const &y)
 template <class T>
 Vector<T> operator*(Matrix<T> const &A, SparseVector<T> const &x)
 {
+	assert(A.GetNumberOfColumns() == x.size());
 	Vector<T> z(A.GetNumberOfRows());
 
-	for (int j = 0; j < x.nonZeroes(); j++)
+	for (unsigned int j = 0; j < x.nonZeroes(); j++)
 	{
-
 		unsigned int J = x.indexNonZero(j);
 		T val = x.valueNonZero(j);
 		for (int i = 0; i < A.GetNumberOfRows(); i++)
 		{
-			z[i] += A(i,j) * val;
+			z[i] += A(i, J) * val;
 		}
 	}
 	return z;
@@ -166,16 +224,17 @@ Vector<T> operator*(Matrix<T> const &A, SparseVector<T> const &x)
 template <class T>
 Vector<T> operator*(SparseVector<T> const &x, Matrix<T> const &A)
 {
-	int n = A.GetNumberOfRows();
-	Vector<T> z(n);
+	assert(x.size() == A.GetNumberOfRows());
+	int n_cols = A.GetNumberOfColumns();
+	Vector<T> z(n_cols);
 
-	for (int k = 0; k < x.nonZeroes()-1; k++)
+	for (unsigned int k = 0; k < x.nonZeroes(); k++)
 	{
 		unsigned int I = x.indexNonZero(k);
 		T value = x.valueNonZero(k);
-		for (int j = 0; j<n-1; j++)
+		for (int j = 0; j < n_cols; j++)
 		{
-			z[j] += value + A(I,j);
+			z[j] += value * A(I, j);
 		}
 	}
 	return z;

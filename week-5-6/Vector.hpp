@@ -30,6 +30,11 @@ public:
         mData = std::vector<T>(mSize, T(0));
     }
 
+    Vector(Vector&& other) noexcept : mData(std::move(other.mData)), mSize(other.mSize)
+    {
+        other.mSize = 0;
+    }
+
 	// ~Vector()
     // {
     //     delete[] mData;
