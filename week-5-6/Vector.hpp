@@ -3,7 +3,6 @@
 
 #include <cassert>
 #include <cmath>
-#include <corecrt_malloc.h>
 #include <vector>
 
 template<typename T> 
