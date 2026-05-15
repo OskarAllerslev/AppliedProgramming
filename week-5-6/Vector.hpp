@@ -14,14 +14,8 @@ private:
 
 public:
     // copy constructor
-  Vector(const Vector& otherVector)
+  Vector(const Vector& otherVector) : mData(otherVector.mData), mSize(otherVector.mSize)
     {
-        mSize = otherVector.size();
-        mData = new double [mSize];
-        for (int i = 0; i < mSize; i++)
-        {
-            mData[i] = otherVector.mData[i];
-        }
     }
 
 	Vector(int size) : mSize(size)
